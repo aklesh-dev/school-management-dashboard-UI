@@ -13,6 +13,14 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      colors: {
+        izumiSky: "#C3EBFA",
+        izumiSkyLight: "#EDF9FD",
+        izumiPurple: "#CFCEFF",
+        izumiPurpleLight: "#F1F0FF",
+        izumiYellow: "#FAE27C",
+        izumiYellowLight: "#FEFCE8",        
+      },
     },
   },
   plugins: [],
