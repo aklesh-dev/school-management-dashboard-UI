@@ -35,7 +35,7 @@ const CountChart = () => {
       </div>
 
       {/* -- Chart -- */}
-      <div className="w-full h-[75%] flex justify-center items-center relative">
+      <div className="w-full h-[70%] flex justify-center items-center relative">
         <ResponsiveContainer  >
           <RadialBarChart
             cx="50%"

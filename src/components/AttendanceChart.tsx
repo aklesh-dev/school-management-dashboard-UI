@@ -52,7 +52,7 @@ const AttendanceChart = () => {
       </div>
 
       {/* --Chart-- */}
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="95%">
         <BarChart
           width={500}
           height={300}
