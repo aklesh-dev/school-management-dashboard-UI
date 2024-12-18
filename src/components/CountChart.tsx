@@ -27,7 +27,7 @@ const data = [
 
 const CountChart = () => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4">
+    <div className="bg-white rounded-lg shadow-lg p-4 h-full">
       {/* -- Title -- */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="font-semibold text-xl">Students</h1>
@@ -36,7 +36,7 @@ const CountChart = () => {
 
       {/* -- Chart -- */}
       <div className="w-full h-[75%] flex justify-center items-center relative">
-        <ResponsiveContainer width={200}  height={200} >
+        <ResponsiveContainer  >
           <RadialBarChart
             cx="50%"
             cy="50%"
