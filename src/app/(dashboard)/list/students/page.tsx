@@ -1,5 +1,4 @@
-// import FormModal from "@/components/FormModal";
-
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -76,16 +75,17 @@ const StudentListPage = () => {
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
         <div className="flex items-center gap-2">
+          {/* -- Edit Button --  */}
           <Link href={`/list/students/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-izumiSky">
-              <Image src="/view.png" alt="" width={16} height={16} />
+              <Image src="/update.png" alt="" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-izumiPurple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
-            // <FormModal table="teacher" type="delete" id={item.id}/>
+            // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-izumiPurple">
+            //   <Image src="/delete.png" alt="" width={16} height={16} />
+            // </button>
+            <FormModal table="student" type="delete" id={item.id}/>
           )}
         </div>
       </td>
@@ -106,11 +106,12 @@ const StudentListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
+            {/* -- Add Button -- */}
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
-                <Image src="/plus.png" alt="" width={14} height={14} />
-              </button>
-              // <FormModal table="teacher" type="create"/>
+              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
+              //   <Image src="/create.png" alt="" width={14} height={14} />
+              // </button>
+              <FormModal table="student" type="create"/>
             )}
           </div>
         </div>

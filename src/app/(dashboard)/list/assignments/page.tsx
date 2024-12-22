@@ -1,5 +1,4 @@
-// import FormModal from "@/components/FormModal";
-
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -52,16 +51,18 @@ const AssignmentListPage = () => {
       <td className="hidden md:table-cell"> {item.dueDate} </td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
+          {/* <Link href={`/list/teachers/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-izumiSky">                
               <Image src={"/edit.png"} alt="edit" width={16} height={16}  />
             </button>
-          </Link>
+          </Link> */}
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-izumiPurple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
-            // <FormModal table="teacher" type="delete" id={item.id}/>
+           <>
+           {/* --Update Btn-- */}
+           <FormModal table="assignment" type="update" data={item} />
+           {/* --Delete Btn-- */}
+           <FormModal table="assignment" type="delete" id={item.id} />
+         </>
           )}
         </div>
       </td>
@@ -83,10 +84,10 @@ const AssignmentListPage = () => {
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
-                <Image src="/plus.png" alt="" width={14} height={14} />
-              </button>
-              // <FormModal table="teacher" type="create"/>
+              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
+              //   <Image src="/plus.png" alt="" width={14} height={14} />
+              // </button>
+              <FormModal table="assignment" type="create"/>
             )}
           </div>
         </div>
