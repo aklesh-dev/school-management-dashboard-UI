@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import TeacherForm from "./forms/TeacherForm";
 
 const FormModal = ({
   table,
@@ -44,8 +45,8 @@ const FormModal = ({
           <button onClick={() => setOpen(false)} className="bg-gray-500 text-white p-2 rounded-md">No</button>
         </div>
       </form>
-    ) : (
-      "Create or Update form"
+    ) : (      
+      <TeacherForm type="create"/>
     )
   };
 
