@@ -95,7 +95,7 @@ const SingleStudentPage = () => {
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-sm text-gray-500">
             <Link className="p-3 rounded-md bg-izumiSky" href={"/"}>Student&apos;s Lessons</Link>
-            <Link className="p-3 rounded-md bg-izumiPurple" href={"/"}>Student&apos;s Teachers</Link>
+            <Link className="p-3 rounded-md bg-izumiPurple" href={`/list/teachers?classId=${2}`}>Student&apos;s Teachers</Link>
             <Link className="p-3 rounded-md bg-izumiYellow" href={"/"}>Student&apos;s Exams</Link>
             <Link className="p-3 rounded-md bg-izumiPurpleLight" href={"/"}>Student&apos;s Results</Link>
             <Link className="p-3 rounded-md bg-izumiSkyLight" href={"/"}>Student&apos;s Assignments</Link>
