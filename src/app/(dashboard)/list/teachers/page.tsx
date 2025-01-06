@@ -121,7 +121,11 @@ const TeacherListPage = async ({
               classId: parseInt(value), // Parse the value to an integer and set it as the classId filter
             }
           }
-        }
+        };
+        break;
+        case "search": {
+          query.name = {contains: value, mode: "insensitive"};
+        };
       }
     }
   }
