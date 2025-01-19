@@ -2,70 +2,76 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { parentsData, role } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEMS_PER_PAGE } from "@/lib/settings";
+import { getRoleAndUserId } from "@/lib/utils";
 import { Parent, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 
-type ParentList = Parent & { students: Student[] }; 
+type ParentList = Parent & { students: Student[] };
 
-const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-  },
-  {
-    header: "Student Names",
-    accessor: "studentNames",
-    className: "hidden md:table-cell",
-  },
+const createColumns = (role: string | undefined) => {
+  return [
+    {
+      header: "Info",
+      accessor: "info",
+    },
+    {
+      header: "Student Names",
+      accessor: "studentNames",
+      className: "hidden md:table-cell",
+    },
 
-  {
-    header: "Phone",
-    accessor: "phone",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Address",
-    accessor: "address",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
+    {
+      header: "Phone",
+      accessor: "phone",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Address",
+      accessor: "address",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Actions",
+      accessor: "action",
+    },
+  ];
+};
 
-const renderRow = (item: ParentList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-izumiPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item?.email}</p>
-      </div>
-    </td>
-    <td className="hidden md:table-cell">{item.students?.map(student=>student.name).join(",")}</td>
-    <td className="hidden md:table-cell">{item.phone}</td>
-    <td className="hidden md:table-cell">{item.address}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === "admin" && (
-          <>
-            {/* --Update Btn-- */}
-            <FormModal table="parent" type="update" data={item} />
-            {/* --Delete Btn-- */}
-            <FormModal table="parent" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
+const createRenderRow = (role: string | undefined) => {
+  const renderRow = (item: ParentList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-izumiPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="text-xs text-gray-500">{item?.email}</p>
+        </div>
+      </td>
+      <td className="hidden md:table-cell">
+        {item.students?.map((student) => student.name).join(",")}
+      </td>
+      <td className="hidden md:table-cell">{item.phone}</td>
+      <td className="hidden md:table-cell">{item.address}</td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              {/* --Update Btn-- */}
+              <FormModal table="parent" type="update" data={item} />
+              {/* --Delete Btn-- */}
+              <FormModal table="parent" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+  return renderRow;
+};
 
 const ParentListPage = async ({
   searchParams,
@@ -75,34 +81,37 @@ const ParentListPage = async ({
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
 
+  const {role, currentUserId} = await getRoleAndUserId();
+
+  const columns = createColumns(role);
+  const renderRow = createRenderRow(role);
+
   // --URL PARAMS CONDITION
 
   // --Dynamic filtering condition for querying student data
   const query: Prisma.ParentWhereInput = {}; //--Prisma query
   if (queryParams) {
-    // Check if queryParams exists and is not null/undefined
     for (const [key, value] of Object.entries(queryParams)) {
-      // Iterate over each key-value pair in the queryParams object
       if (value !== undefined) {
-        // Ensure the value is defined before processing
-        switch (key) {          
-          case "search": {
-            query.name = { contains: value, mode: "insensitive" };
-          }
-          break;
-          default: 
+        switch (key) {
+          case "search":
+            {
+              query.name = { contains: value, mode: "insensitive" };
+            }
+            break;
+          default:
             break;
         }
       }
     }
-  };
+  }
 
   const [data, count] = await prisma.$transaction([
-    prisma.parent.findMany({ 
+    prisma.parent.findMany({
       where: query,
       include: {
         students: true,
-      },    
+      },
       take: ITEMS_PER_PAGE,
       skip: (p - 1) * ITEMS_PER_PAGE,
     }),

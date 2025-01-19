@@ -2,15 +2,15 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, subjectsData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEMS_PER_PAGE } from "@/lib/settings";
+import { getRoleAndUserId } from "@/lib/utils";
 import { Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 
 type SubjectList = Subject & { teachers: Teacher[]};
 
+const createColumns = (role: string | undefined) => {
 const columns = [
   {
     header: "Subject Name",
@@ -21,12 +21,19 @@ const columns = [
     accessor: "teachers",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
+return columns;
+};
 
+const createRenderRow =(role: string | undefined) => {
 const renderRow = (item: SubjectList) => (
   <tr
     key={item.id}
@@ -50,6 +57,8 @@ const renderRow = (item: SubjectList) => (
     </td>
   </tr>
 );
+return renderRow;
+};
 
 const SubjectListPage = async ({
   searchParams,
@@ -59,6 +68,12 @@ const SubjectListPage = async ({
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
 
+  // --USER ROLE
+  const { role} = await getRoleAndUserId();
+
+  const columns = createColumns(role);
+  const renderRow = createRenderRow(role);
+  
   // --URL PARAMS CONDITION
 
   // --Dynamic filtering condition for querying student data

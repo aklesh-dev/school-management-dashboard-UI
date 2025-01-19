@@ -2,57 +2,69 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import {  lessonsData, role } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEMS_PER_PAGE } from "@/lib/settings";
+import { getRoleAndUserId } from "@/lib/utils";
 import { Class, Lesson, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 
-type LessonList = Lesson & { teacher: Teacher, class: Class, subject: Subject};
+type LessonList = Lesson & { teacher: Teacher; class: Class; subject: Subject };
 
-const columns = [
-  {
-    header: "Subject Name",
-    accessor: "name",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-  },
-  {
-    header: "Teacher",
-    accessor: "teacher",
-    className: "hidden md:table-cell",
-  },  
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
+const createColumns = (role: string | undefined) => {
+  return [
+    {
+      header: "Subject Name",
+      accessor: "name",
+    },
+    {
+      header: "Class",
+      accessor: "class",
+    },
+    {
+      header: "Teacher",
+      accessor: "teacher",
+      className: "hidden md:table-cell",
+    },
+    ...(role === "admin"
+      ? [
+          {
+            header: "Actions",
+            accessor: "action",
+          },
+        ]
+      : []),
+  ];
+};
 
-const renderRow = (item: LessonList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-izumiPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">{item.subject.name}</td>
-    <td > {item.class.name} </td>
-    <td className="hidden md:table-cell"> {item.teacher.name + " " + item.teacher.surname} </td>
-    <td>
-      <div className="flex items-center gap-2">        
-        {role === "admin" && (
-           <>
-           {/* --Update Btn-- */}
-           <FormModal table="lesson" type="update" data={item} />
-           {/* --Delete Btn-- */}
-           <FormModal table="lesson" type="delete" id={item.id} />
-         </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
+
+const createRenderRow = (role: string | undefined) => {
+  const renderRow = (item: LessonList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-izumiPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">{item.subject.name}</td>
+      <td> {item.class.name} </td>
+      <td className="hidden md:table-cell">
+        {" "}
+        {item.teacher.name + " " + item.teacher.surname}{" "}
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              {/* --Update Btn-- */}
+              <FormModal table="lesson" type="update" data={item} />
+              {/* --Delete Btn-- */}
+              <FormModal table="lesson" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+  return renderRow;
+};
 
 const LessonListPage = async ({
   searchParams,
@@ -62,27 +74,28 @@ const LessonListPage = async ({
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
 
+  const { role, currentUserId } = await getRoleAndUserId();
+  const renderRow = createRenderRow(role);
+  const columns = createColumns(role);
+
   // --URL PARAMS CONDITION
 
   // --Dynamic filtering condition for querying student data
   const query: Prisma.LessonWhereInput = {}; //--Prisma query
   if (queryParams) {
-    // Check if queryParams exists and is not null/undefined
     for (const [key, value] of Object.entries(queryParams)) {
-      // Iterate over each key-value pair in the queryParams object
       if (value !== undefined) {
-        // Ensure the value is defined before processing
         switch (key) {
           case "classId":
-            query.classId = parseInt(value); //--Convert value to number bez it's string 
+            query.classId = parseInt(value); //--Convert value to number bez it's string
             break;
           case "teacherId":
             query.teacherId = value;
             break;
           case "search":
             query.OR = [
-              {subject: {name: { contains: value, mode: "insensitive" }}},
-              {teacher: {name: { contains: value, mode: "insensitive" }}},
+              { subject: { name: { contains: value, mode: "insensitive" } } },
+              { teacher: { name: { contains: value, mode: "insensitive" } } },
             ];
             break;
           default:
@@ -96,9 +109,9 @@ const LessonListPage = async ({
     prisma.lesson.findMany({
       where: query,
       include: {
-        teacher: {select: {name: true, surname: true}},
-        subject: {select: {name: true}},
-        class: {select: {name: true}},
+        teacher: { select: { name: true, surname: true } },
+        subject: { select: { name: true } },
+        class: { select: { name: true } },
       },
       take: ITEMS_PER_PAGE,
       skip: (p - 1) * ITEMS_PER_PAGE,
@@ -122,9 +135,7 @@ const LessonListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (              
-              <FormModal table="lesson" type="create"/>
-            )}
+            {role === "admin" && <FormModal table="lesson" type="create" />}
           </div>
         </div>
       </div>

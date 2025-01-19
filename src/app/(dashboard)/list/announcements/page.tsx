@@ -4,14 +4,10 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import prisma from "@/lib/prisma";
 import { ITEMS_PER_PAGE } from "@/lib/settings";
-import { auth } from "@clerk/nextjs/server";
+import { getRoleAndUserId } from "@/lib/utils";
 import { Announcement, Class, Prisma } from "@prisma/client";
 import Image from "next/image";
 
-const getRole = async () => {
-  const { sessionClaims } = await auth();
-  return (sessionClaims?.metadata as { role?: string })?.role;
-};
 
 type AnnouncementList = Announcement & { class: Class };
 
@@ -44,7 +40,7 @@ const createRenderRow = (role: string | undefined) => {
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-izumiPurpleLight"
     >
       <td className="flex items-center gap-4 p-4">{item.title}</td>
-      <td className="">{item.class.name}</td>
+      <td className="">{item.class?.name || "N/A"}</td>
       <td className="hidden md:table-cell">
         {new Intl.DateTimeFormat("en-US").format(item.date)}
       </td>
@@ -62,7 +58,7 @@ const createRenderRow = (role: string | undefined) => {
       </td>
     </tr>
   );
-  RenderRow.displayName = `RenderRow-${role}`; // Assign a display name
+  // RenderRow.displayName = `RenderRow-${role}`; // Assign a display name
   return RenderRow;
 };
 
@@ -72,7 +68,7 @@ const AnnouncementListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
 
-  const role = await getRole();
+  const {role, currentUserId} = await getRoleAndUserId();
   const renderRow = createRenderRow(role);
   const columns = createColumns(role);
 
@@ -97,6 +93,19 @@ const AnnouncementListPage = async ({
       }
     }
   }
+
+   // --ROLE CONDITIONS
+
+   const roleConditions = {
+    teacher: { lessons: { some: { teacherId: currentUserId! } } },
+    student: { students: { some: { id: currentUserId! } } },
+    parent: { students: { some: { parentId: currentUserId! } } },
+  };
+
+  query.OR = [
+    { classId: null },
+    { class: roleConditions[role as keyof typeof roleConditions] || {} },
+  ];
 
   const [data, count] = await prisma.$transaction([
     prisma.announcement.findMany({
