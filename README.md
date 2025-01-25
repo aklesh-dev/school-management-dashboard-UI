@@ -24,3 +24,14 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Lama Dev Youtube Channel](https://youtube.com/lamadev) 
 - [Next.js](https://nextjs.org/learn)
+
+
+To npx prisma command.
+- npx prisma init (to create a new prisma project)
+- npx prisma migrate dev (to create a new migration)
+- npx prisma generate (to generate the prisma client)
+- npx prisma studio (to open the prisma studio)
+
+<!-- run this command to reset the database and seed it -->
+- npx prisma db push --force-reset (to reset the database and seed it)
+- npx prisma db seed  (to seed the database)
