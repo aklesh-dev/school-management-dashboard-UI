@@ -11,7 +11,7 @@ const AttendanceChart = ({data}: {data: {name: string, present: number, absent: 
         <BarChart
           width={500}
           height={300}
-          data={data}
+          data={data as any}
           margin={{
             top: 5,
             right: 30,
