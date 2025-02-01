@@ -27,7 +27,7 @@ const BigCalendarContainer = async ({
   
   return (
     <div className="">
-      <BigCalendar data={schedule} />
+      <BigCalendar data={data} />
     </div>
   );
 };
