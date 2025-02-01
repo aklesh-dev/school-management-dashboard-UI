@@ -33,7 +33,7 @@ const Announcements = async () => {
       </div>
 
       <div className="flex flex-col mt-4 gap-4">
-        <div className="bg-izumiSkyLight p-4 rounded-md shadow-md">
+        { data[0] && <div className="bg-izumiSkyLight p-4 rounded-md shadow-md">
           <div className="flex items-center justify-between">
             <h2 className="font-medium">{data[0].title}</h2>
             <span className="text-gray-400 text-xs bg-white rounded-md p-1">
@@ -41,8 +41,8 @@ const Announcements = async () => {
             </span>
           </div>
           <p className="text-gray-500 text-xs mt-2">{data[0].description}</p>
-        </div>
-        <div className="bg-izumiPurpleLight p-4 rounded-md shadow-md">
+        </div>}
+        { data[1] && <div className="bg-izumiPurpleLight p-4 rounded-md shadow-md">
           <div className="flex items-center justify-between">
             <h2 className="font-medium">{data[1].title}</h2>
             <span className="text-gray-400 text-xs bg-white rounded-md p-1">
@@ -50,8 +50,8 @@ const Announcements = async () => {
             </span>
           </div>
           <p className="text-gray-500 text-xs mt-2">{data[1].description}</p>
-        </div>
-        <div className="bg-izumiYellowLight p-4 rounded-md shadow-md">
+        </div>}
+        { data[2] && <div className="bg-izumiYellowLight p-4 rounded-md shadow-md">
           <div className="flex items-center justify-between">
             <h2 className="font-medium">{data[2].title}</h2>
             <span className="text-gray-400 text-xs bg-white rounded-md p-1">
@@ -59,7 +59,7 @@ const Announcements = async () => {
             </span>
           </div>
           <p className="text-gray-500 text-xs mt-2">{data[2].description}</p>
-        </div>
+        </div>}
       </div>
     </div>
   );
