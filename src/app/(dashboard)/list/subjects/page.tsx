@@ -124,6 +124,7 @@ const SubjectListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-izumiYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
+            {/* --create form model-- */}
             {role === "admin" && (
               <FormModal table="subject" type="create"/>
             )}
