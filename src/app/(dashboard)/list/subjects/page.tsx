@@ -1,4 +1,5 @@
 import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -49,8 +50,8 @@ const renderRow = (item: SubjectList) => (
       <div className="flex items-center gap-2">          
         {role === "admin" && (
           <>
-          <FormModal table="subject" type="update" data={item}/>
-          <FormModal table="subject" type="delete" id={item.id}/>
+          <FormContainer table="subject" type="update" data={item}/>
+          <FormContainer table="subject" type="delete" id={item.id}/>
           </>
         )}
       </div>
