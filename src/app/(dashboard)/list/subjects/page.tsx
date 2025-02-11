@@ -1,4 +1,3 @@
-import FormModal from "@/components/FormModal";
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
@@ -127,7 +126,7 @@ const SubjectListPage = async ({
             </button>
             {/* --create form model-- */}
             {role === "admin" && (
-              <FormModal table="subject" type="create"/>
+              <FormContainer table="subject" type="create"/>
             )}
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteSubject } from "@/lib/actions";
+import { deleteClass, deleteSubject } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ import { FormContainerProps } from "./FormContainer";
 
 const deleteActionMap = {
   subject: deleteSubject,
-  class: deleteSubject,
+  class: deleteClass,
   teacher: deleteSubject,
   student: deleteSubject,
   parent: deleteSubject,
@@ -36,6 +36,9 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
 const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
   loading: () => <p>Loading...</p>,
 });
+const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <p>Loading...</p>,
+});
 
 const forms: {
   [key: string]: (
@@ -45,15 +48,18 @@ const forms: {
     relatedData?: any,
   ) => JSX.Element;
 } = {
+  class: (setOpen, type, data, relatedData) => (
+    <ClassForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+  ),
   subject: (setOpen, type, data, relatedData) => (
     <SubjectForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
   ),
-  teacher: (setOpen, type, data) => (
-    <TeacherForm type={type} data={data} setOpen={setOpen} relatedData={relatedData}/>
-  ),
-  student: (setOpen, type, data) => (
-    <StudentForm type={type} data={data} setOpen={setOpen}relatedData={relatedData} />
-  ),
+  // teacher: (setOpen, type, data) => (
+  //   <TeacherForm type={type} data={data} setOpen={setOpen} relatedData={relatedData}/>
+  // ),
+  // student: (setOpen, type, data) => (
+  //   <StudentForm type={type} data={data} setOpen={setOpen}relatedData={relatedData} />
+  // ),
 };
 
 const FormModal = ({
@@ -83,7 +89,7 @@ const FormModal = ({
 
     useEffect(()=>{
       if(state.success){
-        toast.success(`Subject has been deleted.`,{position:"top-right"});
+        toast.success(`${capitalizeFirstLetter(table)} has been deleted.`,{position:"top-right"});
         setOpen(false);
         router.refresh();  //--> ensure data freshness. triggers a re-fetch of the data for the current route
       }
@@ -110,6 +116,11 @@ const FormModal = ({
     ) : (
       "Form not found!"
     );
+  };
+
+  // Helper function to capitalize the first letter of the table name (used for toast delete message)
+  const capitalizeFirstLetter = (str:string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   return (
