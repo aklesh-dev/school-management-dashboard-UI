@@ -23,8 +23,7 @@ type RelatedData = {
   teachers: { id: string; name: string; surname: string }[];
 };
 
-
-const FormContainer =  async ({ table, type, data, id }: FormContainerProps) => {
+const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
   let relatedData = {};
 
   if (type !== "delete") {
@@ -33,26 +32,36 @@ const FormContainer =  async ({ table, type, data, id }: FormContainerProps) => 
         const subjectTeachers = await prisma.teacher.findMany({
           select: { id: true, name: true, surname: true },
         });
-        relatedData = {teachers: subjectTeachers};
+        relatedData = { teachers: subjectTeachers };
         break;
 
       case "class":
         const classGrade = await prisma.grade.findMany({
-          select: {id: true, level:true}
+          select: { id: true, level: true },
         });
         const classTeacher = await prisma.teacher.findMany({
-          select: {id: true, name:true, surname:true}
+          select: { id: true, name: true, surname: true },
         });
-        relatedData = {teachers: classTeacher, grades: classGrade};
+        relatedData = { teachers: classTeacher, grades: classGrade };
         break;
 
       case "teacher":
         const teacherSubjects = await prisma.subject.findMany({
-          select: {id: true, name:true}
+          select: { id: true, name: true },
         });
-        relatedData = {subjects: teacherSubjects};
+        relatedData = { subjects: teacherSubjects };
         break;
-        
+
+      case "student":
+        const studentGrades = await prisma.grade.findMany({
+          select: { id: true, level: true },
+        });
+        const studentClasses = await prisma.class.findMany({
+          include: { _count: { select: { students: true } } }, // -- to show empty space in class
+        });
+        relatedData = { grades: studentGrades, classes: studentClasses };
+        break;
+
       default:
         break;
     }
@@ -60,7 +69,13 @@ const FormContainer =  async ({ table, type, data, id }: FormContainerProps) => 
 
   return (
     <div className="">
-      <FormModal table={table} type={type} data={data} id={id} relatedData={relatedData} />
+      <FormModal
+        table={table}
+        type={type}
+        data={data}
+        id={id}
+        relatedData={relatedData}
+      />
     </div>
   );
 };

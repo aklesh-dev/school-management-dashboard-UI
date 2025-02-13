@@ -46,3 +46,38 @@ export const teacherschema = z.object({
 });
 
 export type Teacherschema = z.infer<typeof teacherschema>;
+
+// --Student Scheam--
+export const studentSchema = z.object({
+  id: z.string().optional(),
+  username: z
+    .string()
+    .min(3, { message: "Username must be atleast 3 characters long!" })
+    .max(20, { message: "Username must be at most 20 characters long!" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be atleast 8 characters long!" }).optional().or(z.literal("")),
+  name: z.string().min(1, { message: "First name is required" }),
+  surname: z.string().min(1, { message: "Last name is required " }),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => (val === "" ? null : val)),
+    phone: z
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => (val === "" ? null : val)),
+  address: z.string().optional(),
+  img: z.string().optional(),
+  bloodType: z.string().min(1, { message: "Blood Type is required" }),
+  birthdate: z.coerce.date({ message: "Birthdate is required" }),
+  sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required" }),
+  gradeId: z.coerce.number().min(1, {message: "Grade is required"}),
+  classId: z.coerce.number().min(1, {message: "Class is required"}),
+  parentId: z.string().min(1, {message: "Parent Id is required"}),
+});
+
+export type StudentSchema = z.infer<typeof studentSchema>;

@@ -28,7 +28,6 @@ const TeacherForm = ({
     formState: { errors },
   } = useForm<Teacherschema>({
     resolver: zodResolver(teacherschema),
-    defaultValues: data,
   });
 
   const [img, setImg] = useState<any>(); //--image store hook.
