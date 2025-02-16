@@ -1,4 +1,4 @@
-import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -70,9 +70,9 @@ const createRenderRow = (role: string | undefined) => {
           {role === "admin" || role === "teacher" && (
             <>
               {/* --Update Btn-- */}
-              <FormModal table="exam" type="update" data={item} />
+              <FormContainer table="exam" type="update" data={item} />
               {/* --Delete Btn-- */}
-              <FormModal table="exam" type="delete" id={item.id} />
+              <FormContainer table="exam" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -182,7 +182,7 @@ const ExamListPage = async ({
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
 
-            {role === "admin" && <FormModal table="exam" type="create" />}
+            {role === "admin" || role === "teacher" && <FormContainer table="exam" type="create" />}
           </div>
         </div>
       </div>

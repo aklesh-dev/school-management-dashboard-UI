@@ -28,7 +28,9 @@ export const teacherschema = z.object({
     .max(20, { message: "Username must be at most 20 characters long!" }),
   password: z
     .string()
-    .min(8, { message: "Password must be atleast 8 characters long!" }).optional().or(z.literal("")),
+    .min(8, { message: "Password must be atleast 8 characters long!" })
+    .optional()
+    .or(z.literal("")),
   name: z.string().min(1, { message: "First name is required" }),
   surname: z.string().min(1, { message: "Last name is required " }),
   email: z
@@ -56,7 +58,9 @@ export const studentSchema = z.object({
     .max(20, { message: "Username must be at most 20 characters long!" }),
   password: z
     .string()
-    .min(8, { message: "Password must be atleast 8 characters long!" }).optional().or(z.literal("")),
+    .min(8, { message: "Password must be atleast 8 characters long!" })
+    .optional()
+    .or(z.literal("")),
   name: z.string().min(1, { message: "First name is required" }),
   surname: z.string().min(1, { message: "Last name is required " }),
   email: z
@@ -65,7 +69,7 @@ export const studentSchema = z.object({
     .optional()
     .or(z.literal(""))
     .transform((val) => (val === "" ? null : val)),
-    phone: z
+  phone: z
     .string()
     .optional()
     .or(z.literal(""))
@@ -75,9 +79,20 @@ export const studentSchema = z.object({
   bloodType: z.string().min(1, { message: "Blood Type is required" }),
   birthdate: z.coerce.date({ message: "Birthdate is required" }),
   sex: z.enum(["MALE", "FEMALE"], { message: "Sex is required" }),
-  gradeId: z.coerce.number().min(1, {message: "Grade is required"}),
-  classId: z.coerce.number().min(1, {message: "Class is required"}),
-  parentId: z.string().min(1, {message: "Parent Id is required"}),
+  gradeId: z.coerce.number().min(1, { message: "Grade is required" }),
+  classId: z.coerce.number().min(1, { message: "Class is required" }),
+  parentId: z.string().min(1, { message: "Parent Id is required" }),
 });
 
 export type StudentSchema = z.infer<typeof studentSchema>;
+
+// Exam Schema
+export const examSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1, { message: "Title is required!" }),
+  startTime: z.coerce.date({ message: "Start time is required!" }),
+  endTime: z.coerce.date({ message: "End time is required!" }),
+  lessonId: z.coerce.number({ message: "Lesson is required!" }),
+});
+
+export type ExamSchema = z.infer<typeof examSchema>;
